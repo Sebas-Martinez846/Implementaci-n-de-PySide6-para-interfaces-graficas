@@ -131,17 +131,10 @@ Asegúrate de tener un archivo llamado `captura.png` y tu recurso `images.jpg` e
 
 ### Vista de la Aplicación en Ejecución
 
-*Primera captura de la palicación
-<a id="evidencia-captura"></a>
-![primera captura](imagenes/prueba1.png)
-
-*Segunda captura de la aplicación
-<a id="evidencia-captura"></a>
-![segunda captura](imagenes/prueba2.png)
+Puedes ir a la sección de imágenes [Aquí](imagenes/)
 
 ---
 
 ## 6. Fuentes Consultadas
-* The Qt Company. (s.f.). *Qt for Python Documentation (PySide6)*. Recuperado de: [https://doc.qt.io/qtforpython-6/](https://doc.qt.io/qtforpython-6/)
 * The Qt Company. (s.f.). *Signals and Slots in PySide6*. Recuperado de: [https://doc.qt.io/qtforpython-6/tutorials/basictutorial/signals_and_slots.html](https://doc.qt.io/qtforpython-6/tutorials/basictutorial/signals_and_slots.html)
 * The Qt Company. (s.f.). *Qt Style Sheets Reference*. Recuperado de: [https://doc.qt.io/qt-6/stylesheet-reference.html](https://doc.qt.io/qt-6/stylesheet-reference.html)
