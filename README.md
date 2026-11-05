@@ -127,8 +127,6 @@ Se implementaron dos mecanismos complementarios de interacción orientada a even
 
 ## 5. Evidencia Visual
 
-Asegúrate de tener un archivo llamado `captura.png` y tu recurso `images.jpg` en la raíz del proyecto.
-
 ### Vista de la Aplicación en Ejecución
 
 Puedes ir a la sección de imágenes [Aquí](imagenes/)
