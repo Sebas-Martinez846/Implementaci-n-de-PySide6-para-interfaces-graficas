@@ -76,13 +76,11 @@ PySide6 implementa el paradigma desacoplado de **Signals & Slots (Señales y Ran
 
 ### 2.1. Creación de la Ventana Principal
 La aplicación se encapsula en la clase `Ventana`, la cual hereda directamente de `QMainWindow`.
-* [Ver bloque de inicialización en el código](#linea-clase-ventana)
 * Al instanciar `super().__init__()`, se configuran las dimensiones fijas (`500x330 px`) con `setFixedSize`, el título con `setWindowTitle` y el color de fondo mediante `setStyleSheet`.
 * La ventana se expone al sistema operativo mediante el bucle principal administrado por `QApplication(sys.argv)` y `app.exec()`.
 
 ### 2.2. Creación y Visualización de Componentes
 A diferencia de Tkinter (donde se requiere instanciar y luego invocar `.pack()` o `.grid()`), en PySide6 la pertenencia visual se define pasando el contenedor padre en el constructor:
-* [Ver creación del formulario en el código](#linea-componentes-ui)
 * `self.frame_titulo = QFrame(self)` establece que el frame pertenece a la ventana principal.
 * `self.titulo = QLabel(self.frame_titulo)` hace que la etiqueta resida dentro de ese frame.
 * El posicionamiento y dimensionamiento exacto se determina con `setGeometry(x, y, ancho, alto)`, asegurando un diseño fijo y ordenado sin conflicto entre celdas.
@@ -91,16 +89,13 @@ A diferencia de Tkinter (donde se requiere instanciar y luego invocar `.pack()` 
 Se implementaron dos mecanismos complementarios de interacción orientada a eventos:
 1. **Evento de ratón:** Señal `.clicked` proveniente del widget `QPushButton`.
 2. **Evento de teclado:** Señal `.returnPressed` proveniente del widget `QLineEdit`.
-* [Ver conexión de señales en el código](#linea-conexion-eventos)
 * Ambos eventos detectan la interacción y dirigen el flujo hacia el mismo manejador, garantizando que el usuario pueda enviar el formulario haciendo clic o pulsando la tecla `Enter`.
 
 ### 2.4. Método de Respuesta al Evento
-* [Ver método obtiene_texto en el código](#linea-metodo-slot)
 * El método `obtiene_texto(self)` actúa como el **Slot** receptor.
 * Extrae el contenido ingresado en la caja de texto mediante `self.entrada.text()` y aplica la lógica necesaria para actualizar el estado.
 
 ### 2.5. Modificación de la Interfaz tras la Interacción
-* [Ver apertura de diálogo en el código](#linea-modificacion-interfaz)
 * Cuando se dispara `obtiene_texto(self)`, el método altera dinámicamente el texto del cuadro emergente invocando `self.titulo_dialogo.setText(...)`.
 * Posteriormente, hace visible el cuadro de diálogo modal invocando `self.dialogo.show()`, mostrando el saludo personalizado junto con la imagen de bienvenida cargada mediante estilos visuales.
 
@@ -108,139 +103,14 @@ Se implementaron dos mecanismos complementarios de interacción orientada a even
 
 ## 3. Código Fuente del Proyecto
 
-Guarda este archivo bajo el nombre `main.py`:
-
-```python
-import sys
-import os
-from PySide6.QtWidgets import (
-    QApplication, QMainWindow, QFrame, QLabel, 
-    QLineEdit, QPushButton, QDialog
-)
-from PySide6.QtCore import Qt
-
-# <a id="linea-clase-ventana"></a>
-class Ventana(QMainWindow):
-    def __init__(self):
-        super().__init__()
-
-        # Configuración de la ventana principal
-        self.setWindowTitle("Primera ventana con PySide6")
-        self.setFixedSize(500, 330)
-        self.setStyleSheet("background: #242526;")
-
-        # Construcción de la interfaz gráfica
-        self.inicializar_UI()
-
-    # <a id="linea-componentes-ui"></a>
-    def inicializar_UI(self):
-        # Frame 1: Cabecera
-        self.frame_titulo = QFrame(self)
-        self.frame_titulo.setGeometry(10, 10, 480, 100)
-        self.frame_titulo.setStyleSheet("background: #1d2f44;")
-
-        # Título
-        self.titulo = QLabel(self.frame_titulo)
-        self.titulo.setText("Hola!")
-        self.titulo.setGeometry(0, 20, 480, 40)
-        self.titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.titulo.setStyleSheet("""
-            color: white;
-            font-size: 25px;
-            font-weight: bold;
-        """)
-
-        # Frame 2: Formulario interactivo
-        self.frame2 = QFrame(self)
-        self.frame2.setGeometry(10, 120, 480, 200)
-        self.frame2.setStyleSheet("background: #1d2f44;")
-
-        # Enunciado
-        self.enunciado = QLabel(self.frame2)
-        self.enunciado.setText("Ingresa Tu nombre!")
-        self.enunciado.setGeometry(0, 20, 480, 40)
-        self.enunciado.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.enunciado.setStyleSheet("""
-            color: white;
-            font-size: 25px;
-            font-weight: bold;
-        """)
-
-        # Campo de entrada (QLineEdit)
-        self.entrada = QLineEdit(self.frame2)
-        self.entrada.setGeometry(10, 70, 460, 45)
-        self.entrada.setStyleSheet("background: white; color: black; font-size: 16px;")
-
-        # Botón de acción (QPushButton)
-        self.boton = QPushButton(self.frame2)
-        self.boton.setText("Click me")
-        self.boton.setGeometry(10, 130, 460, 40)
-        self.boton.setStyleSheet("""
-            background: #314F72;
-            color: white;
-            font-size: 20px;
-            font-weight: bold;
-        """)
-
-        # <a id="linea-conexion-eventos"></a>
-        # Conexión de Eventos: Clic de ratón y Tecla Enter
-        self.boton.clicked.connect(self.obtiene_texto)
-        self.entrada.returnPressed.connect(self.obtiene_texto)
-
-        # Diálogo emergente de respuesta
-        self.dialogo = QDialog(self)
-        self.dialogo.setFixedSize(300, 300)
-        self.dialogo.setStyleSheet("background: #242526;")
-
-        self.frame_titulo_dialogo = QFrame(self.dialogo)
-        self.frame_titulo_dialogo.setGeometry(10, 10, 280, 100)
-        self.frame_titulo_dialogo.setStyleSheet("background: #1d2f44;")
-
-        self.titulo_dialogo = QLabel(self.frame_titulo_dialogo)
-        self.titulo_dialogo.setGeometry(0, 30, 280, 40)
-        self.titulo_dialogo.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.titulo_dialogo.setStyleSheet("""
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-        """)
-
-        self.frame_imagen = QFrame(self.dialogo)
-        self.frame_imagen.setGeometry(10, 120, 280, 170)
-        
-        # Ruta dinámica para la imagen
-        ruta_script = os.path.dirname(os.path.abspath(__file__))
-        ruta_imagen = os.path.join(ruta_script, "images.jpg").replace("\\", "/")
-        self.frame_imagen.setStyleSheet(f"border-image: url('{ruta_imagen}') 0 0 0 0 stretch stretch;")
-
-    # <a id="linea-metodo-slot"></a>
-    def obtiene_texto(self):
-        """Slot encargado de procesar la entrada y modificar la interfaz."""
-        nombre = self.entrada.text().strip()
-        if not nombre:
-            nombre = "Usuario"
-
-        # <a id="linea-modificacion-interfaz"></a>
-        self.titulo_dialogo.setText(f"¡Bienvenido {nombre}!")
-        self.dialogo.show()
-        print(f"Formulario enviado con el nombre: {nombre}")
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    ventana = Ventana()
-    ventana.show()
-    sys.exit(app.exec())
-```
-
----
+*Puedes consultar el [código fuente aquí](./pyside6_GUI.py).
 
 ## 4. Instrucciones de Ejecución
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone https://github.com/tu-usuario/tu-repositorio.git
-   cd tu-repositorio
+   git clone https://github.com/Sebas-Martinez846/Implementaci-n-de-PySide6-para-interfaces-graficas.git
+   cd Implementaci-n-de-PySide6-para-interfaces-graficas
    ```
 
 2. **Instalar dependencias requeridas:**
@@ -250,7 +120,7 @@ if __name__ == "__main__":
 
 3. **Ejecutar la aplicación:**
    ```bash
-   python main.py
+   python pyside6_GUI.py
    ```
 
 ---
@@ -260,10 +130,14 @@ if __name__ == "__main__":
 Asegúrate de tener un archivo llamado `captura.png` y tu recurso `images.jpg` en la raíz del proyecto.
 
 ### Vista de la Aplicación en Ejecución
-<a id="evidencia-captura"></a>
-![Captura de la Aplicación en Ejecución](./captura.png)
 
-> **Nota:** Puedes hacer clic directamente en el enlace a la [Captura de la ventana principal y cuadro de diálogo emergente](#evidencia-captura) para inspeccionar la interfaz activa.
+*Primera captura de la palicación
+<a id="evidencia-captura"></a>
+![primera captura](imagenes/prueba1.png)
+
+*Segunda captura de la aplicación
+<a id="evidencia-captura"></a>
+![segunda captura](imagenes/prueba2.png)
 
 ---
 
